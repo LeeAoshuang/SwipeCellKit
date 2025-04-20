@@ -264,9 +264,12 @@ class SwipeController: NSObject {
         
         animator.addAnimations({
             guard let swipeable = self.swipeable, let actionsContainerView = self.actionsContainerView else { return }
-            
+            var fixOffset = 0.0
+            if let scrollViewWidth = swipeable.scrollView?.frame.size.width, let swipeable = swipeable as? UICollectionViewCell, swipeable.frame.minX > 0 {
+                fixOffset = scrollViewWidth - actionsContainerView.frame.maxX
+            }
             actionsContainerView.center = CGPoint(x: offset, y: actionsContainerView.center.y)
-            swipeable.actionsView?.visibleWidth = abs(actionsContainerView.frame.minX)
+            swipeable.actionsView?.visibleWidth = abs(actionsContainerView.frame.minX + fixOffset)
             swipeable.layoutIfNeeded()
         })
         
